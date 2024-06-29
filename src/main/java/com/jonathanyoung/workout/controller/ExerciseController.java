@@ -25,6 +25,11 @@ public class ExerciseController {
   }
 
   @QueryMapping
+  public ExerciseDto findExerciseByName(@Argument String name) {
+    return exerciseService.getByName(name);
+  }
+
+  @QueryMapping
   public List<ExerciseDto> findAllExercises() {
     return exerciseService.getAll();
   }

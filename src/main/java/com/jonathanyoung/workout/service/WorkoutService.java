@@ -25,6 +25,11 @@ public class WorkoutService {
     return WorkoutMapper.mapToWorkoutDto(workout);
   }
 
+  public WorkoutDto getByTitle(String title) {
+    Workout workout = workoutRepository.findByTitle(title).orElseThrow(() -> new NotFoundException("Workout not found with name : " + title));
+    return WorkoutMapper.mapToWorkoutDto(workout);
+  }
+
   public List<WorkoutDto> getAll() {
     List<Workout> workouts = new ArrayList<>();
     workoutRepository.findAll().forEach(workouts::add);

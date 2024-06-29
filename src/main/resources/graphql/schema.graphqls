@@ -12,15 +12,20 @@ type Exercise {
 
 type Query {
   findWorkoutById(id: ID!): Workout
+  findWorkoutByTitle(title: String!): Workout
   findAllWorkouts: [Workout]
 
   findExerciseById(id: ID!): Exercise
+  findExerciseByName(name: String!): Exercise
   findAllExercises: [Exercise]
 }
 
 type Mutation {
   createWorkout(title: String!, notes: String!): Workout
+  
   createExercise(name: String!, instruction: String!): Exercise
+
+  addExerciseToWorkout(exerciseName: String!, workoutName: String!): String
 }
 
 schema {

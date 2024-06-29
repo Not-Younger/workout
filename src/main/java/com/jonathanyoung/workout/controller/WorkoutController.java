@@ -25,6 +25,11 @@ public class WorkoutController {
   }
 
   @QueryMapping
+  public WorkoutDto findWorkoutByTitle(@Argument String title) {
+    return workoutService.getByTitle(title);
+  }
+
+  @QueryMapping
   public List<WorkoutDto> findAllWorkouts() {
     return workoutService.getAll();
   }

@@ -25,6 +25,11 @@ public class ExerciseService {
     return ExerciseMapper.mapToExerciseDto(exercise);
   }
 
+  public ExerciseDto getByName(String name) {
+    Exercise exercise = exerciseRepository.findByName(name).orElseThrow(() -> new NotFoundException("Exercise not found with name : " + name));
+    return ExerciseMapper.mapToExerciseDto(exercise);
+  }
+
   public List<ExerciseDto> getAll() {
     List<Exercise> exercises = new ArrayList<>();
     exerciseRepository.findAll().forEach(exercises::add);
