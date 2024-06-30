@@ -1,40 +1,27 @@
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  workouts: [Workout]
+}
+
 type Workout {
   id: ID!
   title: String!
   notes: String!
 }
 
-type Exercise {
-  id: ID!
-  name: String!
-  instruction: String!
-}
-
 type Query {
-  findWorkoutById(id: ID!): Workout
-  findWorkoutByTitle(title: String!): Workout
-  findAllWorkouts: [Workout]
-
-  findExerciseById(id: ID!): Exercise
-  findExerciseByName(name: String!): Exercise
-  findAllExercises: [Exercise]
+  user(id: ID!): User
+  users: [User]
 }
 
 type Mutation {
-  createWorkout(title: String!, notes: String!): Workout
+  createUser(username: String!, email: String!): User
+  updateUser(id: ID!, username: String!, email: String!): User
+  deleteUser(id: ID!): String
+
+  createWorkout(userId: ID!, title: String!, notes: String!): Workout
   updateWorkout(id: ID!, title: String!, notes: String!): Workout
-  deleteWorkoutById(id: ID!): String
-
-  createExercise(name: String!, instruction: String!): Exercise
-  updateExercise(id: ID!, name: String, instruction: String): Exercise
-  deleteExerciseById(id: ID!): String
-
-  addExerciseToWorkout(exerciseId: ID!, workoutId: ID!, sets: Int, reps: Int, weight: Float, rest: Int): String
-  updateExerciseWorkout(id: ID!, exerciseId: ID!, workoutId: ID!): String
-  deleteExerciseWorkoutByID(id: ID!): String
-}
-
-schema {
-  query: Query
-  mutation: Mutation
+  deleteWorkout(id: ID!): String
 }
