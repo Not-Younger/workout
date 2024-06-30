@@ -40,4 +40,15 @@ public class ExerciseController {
     return exerciseService.create(exerciseDto);
   }
 
+  @MutationMapping
+  public ExerciseDto updateExercise(@Argument Long id, @Argument String name, @Argument String instruction) {
+    ExerciseDto exerciseDto = new ExerciseDto(id, name, instruction);
+    return exerciseService.update(exerciseDto);
+  }
+
+  @MutationMapping
+  public String deleteExerciseById(@Argument Long id) {
+    return exerciseService.delete(id);
+  }
+
 }

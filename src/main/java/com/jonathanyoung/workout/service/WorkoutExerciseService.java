@@ -2,12 +2,7 @@ package com.jonathanyoung.workout.service;
 
 import org.springframework.stereotype.Service;
 
-import com.jonathanyoung.workout.dto.ExerciseDto;
-import com.jonathanyoung.workout.dto.WorkoutDto;
-import com.jonathanyoung.workout.mapper.ExerciseMapper;
-import com.jonathanyoung.workout.mapper.WorkoutMapper;
-import com.jonathanyoung.workout.model.Exercise;
-import com.jonathanyoung.workout.model.Workout;
+import com.jonathanyoung.workout.exception.NotFoundException;
 import com.jonathanyoung.workout.model.WorkoutExercise;
 import com.jonathanyoung.workout.repository.WorkoutExerciseRepository;
 
@@ -15,26 +10,22 @@ import com.jonathanyoung.workout.repository.WorkoutExerciseRepository;
 public class WorkoutExerciseService {
 
   private final WorkoutExerciseRepository workoutExerciseRepository;
-
-  private final WorkoutService workoutService;
-  private final ExerciseService exerciseService;
   
   public WorkoutExerciseService(WorkoutExerciseRepository workoutExerciseRepository, WorkoutService workoutService, ExerciseService exerciseService) {
     this.workoutExerciseRepository = workoutExerciseRepository;
-    this.workoutService = workoutService;
-    this.exerciseService = exerciseService;
   }
 
-  public String addExerciseToWorkout(String ExerciseName, String WorkoutName) {
-    ExerciseDto exerciseDto = exerciseService.getByName(ExerciseName);
-    Exercise exercise = ExerciseMapper.mapToExercise(exerciseDto);
+  public String add(Long exerciseId, Long workoutId, Integer sets, Integer reps, Float weight, Integer rest) {
+    WorkoutExercise workoutExercise = new WorkoutExercise(null, exerciseId, workoutId, sets, reps, weight, rest);
+    WorkoutExercise createdExerciseWorkout = workoutExerciseRepository.save(workoutExercise);
+    return "Added exercise with id : " + exerciseId + " to workout with id : " + workoutId + " on table workout_exercise with id : " + createdExerciseWorkout.getId();
+  }
 
-    WorkoutDto workoutDto = workoutService.getByTitle(WorkoutName);
-    Workout workout = WorkoutMapper.mapToWorkout(workoutDto);
-
-    WorkoutExercise workoutExercise = new WorkoutExercise(exercise.getId(), workout.getId());
+  public String update(Long id, Long exerciseId, Long workoutId) {
+    WorkoutExercise workoutExercise = workoutExerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("WorkoutExercise not found with id : " + id));
+    workoutExercise.setWorkoutId(workoutId);
+    workoutExercise.setExerciseId(exerciseId);
     workoutExerciseRepository.save(workoutExercise);
-
-    return "Added " + exercise.getName() + " to " + workout.getTitle() + "!";
+    return "WorkoutExercise with id : " + id + " updated to have exercise_id : " + exerciseId + " and workout_id : " + workoutId; 
   }
 }

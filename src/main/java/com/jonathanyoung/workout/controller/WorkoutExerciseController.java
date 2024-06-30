@@ -16,8 +16,13 @@ public class WorkoutExerciseController {
   }
 
   @MutationMapping
-  public String addExerciseToWorkout(@Argument String exerciseName, @Argument String workoutName) {
-    return workoutExerciseService.addExerciseToWorkout(exerciseName, workoutName);
+  public String addExerciseToWorkout(@Argument Long exerciseId, @Argument Long workoutId, @Argument Integer sets, @Argument Integer reps, @Argument Float weight, @Argument Integer rest) {
+    return workoutExerciseService.add(exerciseId, workoutId, sets, reps, weight, rest);
+  }
+
+  @MutationMapping
+  public String updateExerciseWorkout(@Argument Long id, @Argument Long exerciseId, @Argument Long workoutId) {
+    return workoutExerciseService.update(id, exerciseId, workoutId);
   }
   
 }

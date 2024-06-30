@@ -42,4 +42,17 @@ public class ExerciseService {
     return ExerciseMapper.mapToExerciseDto(createdExercise);
   }
 
+  public ExerciseDto update(ExerciseDto exerciseDto) {
+    Exercise exercise = ExerciseMapper.mapToExercise(getById(exerciseDto.id()));
+    exercise.setName(exerciseDto.name());
+    exercise.setInstruction(exerciseDto.instruction());
+    Exercise updatedExercise = exerciseRepository.save(exercise);
+    return ExerciseMapper.mapToExerciseDto(updatedExercise);
+  }
+
+  public String delete(Long id) {
+    exerciseRepository.deleteById(id);
+    return "Delete exercise with id : " + id;
+  }
+
 }

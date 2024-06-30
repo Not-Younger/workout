@@ -22,10 +22,16 @@ type Query {
 
 type Mutation {
   createWorkout(title: String!, notes: String!): Workout
-  
-  createExercise(name: String!, instruction: String!): Exercise
+  updateWorkout(id: ID!, title: String!, notes: String!): Workout
+  deleteWorkoutById(id: ID!): String
 
-  addExerciseToWorkout(exerciseName: String!, workoutName: String!): String
+  createExercise(name: String!, instruction: String!): Exercise
+  updateExercise(id: ID!, name: String, instruction: String): Exercise
+  deleteExerciseById(id: ID!): String
+
+  addExerciseToWorkout(exerciseId: ID!, workoutId: ID!, sets: Int, reps: Int, weight: Float, rest: Int): String
+  updateExerciseWorkout(id: ID!, exerciseId: ID!, workoutId: ID!): String
+  deleteExerciseWorkoutByID(id: ID!): String
 }
 
 schema {

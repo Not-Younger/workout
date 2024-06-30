@@ -42,4 +42,16 @@ public class WorkoutService {
     return WorkoutMapper.mapToWorkoutDto(createdWorkout);
   }
 
+  public WorkoutDto update(WorkoutDto workoutDto) {
+    Workout workout = WorkoutMapper.mapToWorkout(getById(workoutDto.id()));
+    workout.setTitle(workoutDto.title());
+    workout.setNotes(workoutDto.notes());
+    Workout updatedWorkout = workoutRepository.save(workout);
+    return WorkoutMapper.mapToWorkoutDto(updatedWorkout);
+  }
+
+  public String delete(Long id) {
+    workoutRepository.deleteById(id);
+    return "Deleted workout with id : " + id;
+  }
 }

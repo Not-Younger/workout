@@ -23,7 +23,7 @@ public class WorkoutExercise {
 
   private Integer sets;
   private Integer reps;
-  private Integer weight;
+  private Float weight;
   private Integer rest;
 
   public WorkoutExercise() {
@@ -34,10 +34,10 @@ public class WorkoutExercise {
     this.workoutId = workoutId;
   }
 
-  public WorkoutExercise(Long id, Long workoutId, Long exerciseId, Integer sets, Integer reps, Integer weight, Integer rest) {
+  public WorkoutExercise(Long id, Long exerciseId, Long workoutId, Integer sets, Integer reps, Float weight, Integer rest) {
     this.id = id;
-    this.workoutId = workoutId;
     this.exerciseId = exerciseId;
+    this.workoutId = workoutId;
     this.sets = sets;
     this.reps = reps;
     this.weight = weight;
@@ -74,10 +74,10 @@ public class WorkoutExercise {
   public void setReps(Integer reps) {
     this.reps = reps;
   }
-  public Integer getWeight() {
+  public Float getWeight() {
     return weight;
   }
-  public void setWeight(Integer weight) {
+  public void setWeight(Float weight) {
     this.weight = weight;
   }
   public Integer getRest() {

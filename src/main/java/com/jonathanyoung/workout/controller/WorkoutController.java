@@ -39,5 +39,17 @@ public class WorkoutController {
     WorkoutDto workoutDto = new WorkoutDto(null, title, notes);
     return workoutService.create(workoutDto);
   }
+
+  @MutationMapping
+  public WorkoutDto updateWorkout(@Argument Long id, @Argument String title, @Argument String notes) {
+    WorkoutDto workoutDto = new WorkoutDto(id, title, notes);
+    return workoutService.update(workoutDto);
+  }
+
+  @MutationMapping
+  public String deleteWorkoutById(@Argument Long id) {
+    return workoutService.delete(id);
+  }
+ 
   
 }
