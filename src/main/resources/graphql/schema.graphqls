@@ -9,11 +9,34 @@ type Workout {
   id: ID!
   title: String!
   notes: String!
+  exercises: [Exercise]
+}
+
+type Exercise {
+  id: ID!
+  exerciseType: ExerciseType
+  sets: [Set]
+}
+
+type ExerciseType {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+type Set {
+  id: ID!
+  reps: Int
+  weight: Float
+  rest: Int
 }
 
 type Query {
   user(id: ID!): User
   users: [User]
+
+  exerciseType(id: ID!): ExerciseType
+  exerciseTypes: [ExerciseType]
 }
 
 type Mutation {
@@ -24,4 +47,16 @@ type Mutation {
   createWorkout(userId: ID!, title: String!, notes: String!): Workout
   updateWorkout(id: ID!, title: String!, notes: String!): Workout
   deleteWorkout(id: ID!): String
+
+  createExercise(workoutId: ID!, exerciseTypeId: ID!): Exercise
+  updateExercise(id: ID!, exerciseTypeId: ID!): Exercise
+  deleteExercise(id: ID!): String
+
+  addExerciseType(name: String!, description: String!): ExerciseType
+  updateExerciseType(id: ID!, name: String!, description: String!): ExerciseType
+  deleteExerciseType(id: ID!): String
+
+  createSet(exerciseId: ID!): Set
+  updateSet(id: ID!, reps: Int, weight: Float, rest: Int): Set
+  deleteSet(id: ID!): String
 }

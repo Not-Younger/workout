@@ -1,13 +1,20 @@
 package com.jonathanyoung.workout.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "workouts")
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +25,9 @@ public class Workout {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Exercise> exercises = new ArrayList<>();
 
     public Workout() {}
 
@@ -49,5 +59,19 @@ public class Workout {
     }
     public void setUser(User user) {
         this.user = user;
+    }
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
+    }
+    public void addExercise(Exercise exercise) {
+        exercises.add(exercise);
+        exercise.setWorkout(this);
+    }
+    public void removeExercise(Exercise exercise) {
+        exercises.remove(exercise);
+        exercise.setWorkout(null);
     }
 }

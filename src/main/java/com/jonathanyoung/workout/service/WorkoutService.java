@@ -17,6 +17,10 @@ public class WorkoutService {
     this.workoutRepository = workoutRepository;
   }
 
+  public Workout getWorkout(Long id) {
+    return workoutRepository.findById(id).orElse(null);
+  }
+
   public Workout createWorkout(Long userId, String title, String notes) {
     User user = userService.getUser(userId);
     Workout workout = new Workout(title, notes);
