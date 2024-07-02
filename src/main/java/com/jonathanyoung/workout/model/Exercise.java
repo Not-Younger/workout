@@ -1,33 +1,42 @@
 package com.jonathanyoung.workout.model;
 
-import jakarta.persistence.Column;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "exercises")
 public class Exercise {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "name", unique = true)
-  private String name;
+  @ManyToOne
+  @JoinColumn(name = "workout_id")
+  private Workout workout;
+  
+  @ManyToOne
+  @JoinColumn(name = "exercise_type_id")
+  private ExerciseType exerciseType;
 
-  @Column(name = "instruction")
-  private String instruction;
+  @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Set> sets = new ArrayList<>();
 
   public Exercise() {
   }
 
-  public Exercise(Long id, String name, String instruction) {
-    this.id = id;
-    this.name = name;
-    this.instruction = instruction;
+  public Exercise(ExerciseType exerciseType) {
+    this.exerciseType = exerciseType;
   }
 
   public Long getId() {
@@ -36,21 +45,31 @@ public class Exercise {
   public void setId(Long id) {
     this.id = id;
   }
-  public String getName() {
-    return name;
+  public ExerciseType getExerciseType() {
+    return exerciseType;
   }
-  public void setName(String name) {
-    this.name = name;
+  public void setExerciseType(ExerciseType exerciseType) {
+    this.exerciseType = exerciseType;
   }
-  public String getInstruction() {
-    return instruction;
+  public List<Set> getSets() {
+    return sets;
   }
-  public void setInstruction(String instruction) {
-    this.instruction = instruction;
+  public void setSets(List<Set> sets) {
+    this.sets = sets;
+  }
+  public Workout getWorkout() {
+    return workout;
+  }
+  public void setWorkout(Workout workout) {
+    this.workout = workout;
   }
 
-  @Override
-  public String toString() {
-    return "Exercise [id=" + id + ", name=" + name + ", instruction=" + instruction + "]";
+  public void addSet(Set set) {
+    sets.add(set);
+    set.setExercise(this);
+  }
+  public void removeSet(Set set) {
+    sets.remove(set);
+    set.setExercise(null);
   }
 }

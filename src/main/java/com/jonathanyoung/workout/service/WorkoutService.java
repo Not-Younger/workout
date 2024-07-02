@@ -1,57 +1,45 @@
 package com.jonathanyoung.workout.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import com.jonathanyoung.workout.dto.WorkoutDto;
-import com.jonathanyoung.workout.exception.NotFoundException;
-import com.jonathanyoung.workout.mapper.WorkoutMapper;
+import com.jonathanyoung.workout.model.User;
 import com.jonathanyoung.workout.model.Workout;
 import com.jonathanyoung.workout.repository.WorkoutRepository;
 
 @Service
 public class WorkoutService {
-  
+
+  private final UserService userService;
   private final WorkoutRepository workoutRepository;
-  
-  public WorkoutService(WorkoutRepository workoutRepository) {
+
+  public WorkoutService(UserService userService, WorkoutRepository workoutRepository) {
+    this.userService = userService;
     this.workoutRepository = workoutRepository;
   }
 
-  public WorkoutDto getById(Long id) {
-    Workout workout = workoutRepository.findById(id).orElseThrow(() -> new NotFoundException("Workout not found with id : " + id));
-    return WorkoutMapper.mapToWorkoutDto(workout);
+  public Workout getWorkout(Long id) {
+    return workoutRepository.findById(id).orElse(null);
   }
 
-  public WorkoutDto getByTitle(String title) {
-    Workout workout = workoutRepository.findByTitle(title).orElseThrow(() -> new NotFoundException("Workout not found with name : " + title));
-    return WorkoutMapper.mapToWorkoutDto(workout);
+  public Workout createWorkout(Long userId, String title, String notes) {
+    User user = userService.getUser(userId);
+    Workout workout = new Workout(title, notes);
+    user.addWorkout(workout);
+    workoutRepository.save(workout);
+    return workout;
   }
 
-  public List<WorkoutDto> getAll() {
-    List<Workout> workouts = new ArrayList<>();
-    workoutRepository.findAll().forEach(workouts::add);
-    return workouts.stream().map(WorkoutMapper::mapToWorkoutDto).toList();
-  }
-
-  public WorkoutDto create(WorkoutDto workoutDto) {
-    Workout workout = WorkoutMapper.mapToWorkout(workoutDto);
-    Workout createdWorkout = workoutRepository.save(workout);
-    return WorkoutMapper.mapToWorkoutDto(createdWorkout);
-  }
-
-  public WorkoutDto update(WorkoutDto workoutDto) {
-    Workout workout = WorkoutMapper.mapToWorkout(getById(workoutDto.id()));
-    workout.setTitle(workoutDto.title());
-    workout.setNotes(workoutDto.notes());
+  public Workout updateWorkout(Long id, String title, String notes) {
+    Workout workout = workoutRepository.findById(id).orElseThrow();
+    workout.setTitle(title);
+    workout.setNotes(notes);
     Workout updatedWorkout = workoutRepository.save(workout);
-    return WorkoutMapper.mapToWorkoutDto(updatedWorkout);
+    return updatedWorkout;
   }
 
-  public String delete(Long id) {
+  public String deleteWorkout(Long id) {
     workoutRepository.deleteById(id);
     return "Deleted workout with id : " + id;
   }
+  
 }

@@ -1,58 +1,57 @@
 package com.jonathanyoung.workout.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.jonathanyoung.workout.dto.ExerciseDto;
-import com.jonathanyoung.workout.exception.NotFoundException;
-import com.jonathanyoung.workout.mapper.ExerciseMapper;
 import com.jonathanyoung.workout.model.Exercise;
+import com.jonathanyoung.workout.model.ExerciseType;
+import com.jonathanyoung.workout.model.Workout;
 import com.jonathanyoung.workout.repository.ExerciseRepository;
 
 @Service
 public class ExerciseService {
-  
+
   private final ExerciseRepository exerciseRepository;
 
-  public ExerciseService(ExerciseRepository exerciseRepository) {
+  private final WorkoutService workoutService;
+  private final ExerciseTypeService exerciseTypeService;
+
+  public ExerciseService(ExerciseRepository exerciseRepository, WorkoutService workoutService, ExerciseTypeService exerciseTypeService) {
     this.exerciseRepository = exerciseRepository;
+    this.workoutService = workoutService;
+    this.exerciseTypeService = exerciseTypeService;
   }
 
-  public ExerciseDto getById(Long id) {
-    Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found with id : " + id));
-    return ExerciseMapper.mapToExerciseDto(exercise);
+  public Exercise getExercise(Long id) {
+    return exerciseRepository.findById(id).orElse(null);
   }
 
-  public ExerciseDto getByName(String name) {
-    Exercise exercise = exerciseRepository.findByName(name).orElseThrow(() -> new NotFoundException("Exercise not found with name : " + name));
-    return ExerciseMapper.mapToExerciseDto(exercise);
+  public List<Exercise> getExercises(Long workoutId) {
+    return exerciseRepository.findAll();
   }
 
-  public List<ExerciseDto> getAll() {
-    List<Exercise> exercises = new ArrayList<>();
-    exerciseRepository.findAll().forEach(exercises::add);
-    return exercises.stream().map(ExerciseMapper::mapToExerciseDto).toList();
-  }
-
-  public ExerciseDto create(ExerciseDto exerciseDto) {
-    Exercise exercise = ExerciseMapper.mapToExercise(exerciseDto);
+  public Exercise addExercise(Long workoutId, Long exerciseTypeId) {
+    Workout workout = workoutService.getWorkout(workoutId);
+    ExerciseType exerciseType = exerciseTypeService.getExerciseType(exerciseTypeId);
+    Exercise exercise = new Exercise(exerciseType);
+    workout.addExercise(exercise);
     Exercise createdExercise = exerciseRepository.save(exercise);
-    return ExerciseMapper.mapToExerciseDto(createdExercise);
+    return createdExercise;
   }
 
-  public ExerciseDto update(ExerciseDto exerciseDto) {
-    Exercise exercise = ExerciseMapper.mapToExercise(getById(exerciseDto.id()));
-    exercise.setName(exerciseDto.name());
-    exercise.setInstruction(exerciseDto.instruction());
+  public Exercise updateExercise(Long id, Long exerciseTypeId) {
+    Exercise exercise = exerciseRepository.findById(id).orElseThrow();
+    ExerciseType exerciseType = exerciseTypeService.getExerciseType(exerciseTypeId);
+    exercise.setExerciseType(exerciseType);
     Exercise updatedExercise = exerciseRepository.save(exercise);
-    return ExerciseMapper.mapToExerciseDto(updatedExercise);
+    return updatedExercise;
   }
 
-  public String delete(Long id) {
+  public String deleteExercise(Long id) {
     exerciseRepository.deleteById(id);
-    return "Delete exercise with id : " + id;
+    return "Deleted exercise with id : " + id;
   }
 
+  
 }
